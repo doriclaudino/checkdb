@@ -1,0 +1,55 @@
+--base nao archivelog
+SELECT count(1) LOG_MODE FROM GV$DATABASE where upper(LOG_MODE) <> 'ARCHIVELOG'
+
+--option ativada
+select count(1) from gv$option where upper(VALUE) = 'TRUE' and PARAMETER in ('Partitioning','Advanced replication','Bit-mapped indexes','Parallel backup and recovery','Parallel execution','Point-in-time tablespace recovery','Fine-grained access control','Change Data Capture','Online Index Build','Managed Standby','Materialized view rewrite','Database resource manager','Spatial','Automatic Storage Management','Export transportable tablespaces','Fast-Start Fault Recovery','Duplexed backups','Block Media Recovery','Fine-grained Auditing','Application Role','Enterprise User Security','Oracle Data Guard','Oracle Label Security','OLAP','Basic Compression','Join index','Trial Recovery','Data Mining','Online Redefinition','Streams Capture','File Mapping','Block Change Tracking','Flashback Table','Flashback Database','Transparent Data Encryption','Backup Encryption','Unused Block Compression','Oracle Database Vault','Result Cache','SQL Plan Management','SecureFiles Encryption','Real Application Testing','Active Data Guard','Server Flash Cache','Advanced Compression','Deferred Segment Creation','Data Redaction')
+
+--control management pack <> none
+select count(1) from gv$parameter where upper(VALUE) <> 'NONE' and name = 'control_management_pack_access'
+
+--pga agregate < 536870912
+select count(1) from gv$parameter where value < 536870912 and name = 'pga_aggregate_target'
+
+--recicle bin on
+select count(1) from gv$parameter where upper(VALUE) = 'ON' and name = 'recyclebin'
+
+--optimizer mode <> allrows
+select count(1) from gv$parameter where upper(VALUE) <> 'ALL_ROWS' and name = 'optimizer_mode'
+
+--optimizer index cost <> 30
+select count(1) from gv$parameter where value <> '30' and name = 'optimizer_index_cost_adj'
+
+--optimizer index caching <> 70
+select count(1) from gv$parameter where value <> '70' and name = 'optimizer_index_caching'
+
+--lag target < 900 e > 3600
+select count(1) value from gv$parameter where name = 'archive_lag_target' and value not between '900' and '3600'
+
+--sga target
+select count(1) from gv$parameter where name = 'sga_target' and value <> '0'
+
+--sga max size
+select count(1) from gv$parameter where name = 'sga_max_size' and value < '1610612736'
+
+--rman backup archive acima de 3h
+select count(1) from (select INPUT_TYPE, STATUS, max(START_TIME) start_time, max(END_TIME) end_time from V$RMAN_BACKUP_JOB_DETAILS where INPUT_TYPE = 'ARCHIVELOG' group by INPUT_TYPE, STATUS) where end_time < sysdate-3/24
+
+--rman backup full acima de 25h
+select count(1) from (select INPUT_TYPE, STATUS, max(START_TIME) start_time, max(END_TIME) end_time from V$RMAN_BACKUP_JOB_DETAILS where INPUT_TYPE = 'DB FULL' group by INPUT_TYPE, STATUS) where end_time < sysdate-25/24
+
+--ultima analise foi nos ultimos 10 dias
+select count(1) from (select owner, max(nvl(last_analyzed,sysdate-100)) ultima_analise 
+from dba_tables where owner not in('SH','PM','OE','IX','HR','SPATIAL_WFS_ADMIN_USR','SPATIAL_CSW_ADMIN_USR' ,'APEX_PUBLIC_USER' ,'DIP' ,'MDDATA' ,'XS$NULL' ,'ORACLE_OCM' ,'SCOTT' ,'DBSNMP' ,'SYSMAN' ,'OLAPSYS' ,'SI_INFORMTN_SCHEMA' ,'OWBSYS' ,'ORDPLUGINS' ,'XDB' ,'ANONYMOUS' ,'CTXSYS' ,'ORDDATA' ,'OWBSYS_AUDIT' ,'APEX_030200' ,'APPQOSSYS' ,'WMSYS' ,'EXFSYS' ,'ORDSYS' ,'MDSYS' ,'FLOWS_FILES' ,'SYSTEM' ,'SYS' ,'MGMT_VIEW' ,'OUTLN') 
+group by owner order by 1,2) where ultima_analise < sysdate-10
+
+--tamanho dos membros menor de 200mb
+select BYTES from gv$log where bytes < '209715200'
+
+--grupos com menos de 3 membros
+select count(1) from (select INST_ID,GROUP#,count(MEMBERS) membros from gv$log group by INST_ID,GROUP#) where membros <2
+
+--instancia com menos de 5 grupos
+select count(1) from (select INST_ID,count(GROUP#) grupos from gv$log group by INST_ID) where grupos < 5
+
+--menos de 3 control files por instancia (verificar ainda se sao multiplexados)
+select count(1) from (select inst_id,count(*) multiplex from gv$controlfile group by inst_id) where multiplex < 3
