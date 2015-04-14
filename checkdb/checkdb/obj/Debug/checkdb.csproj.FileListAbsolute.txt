@@ -1,0 +1,12 @@
+c:\users\dori\documents\visual studio 2013\Projects\checkdb\checkdb\bin\Debug\checkdb.exe.config
+c:\users\dori\documents\visual studio 2013\Projects\checkdb\checkdb\bin\Debug\checkdb.exe
+c:\users\dori\documents\visual studio 2013\Projects\checkdb\checkdb\bin\Debug\checkdb.pdb
+c:\users\dori\documents\visual studio 2013\Projects\checkdb\checkdb\obj\Debug\checkdb.Properties.Resources.resources
+c:\users\dori\documents\visual studio 2013\Projects\checkdb\checkdb\obj\Debug\checkdb.csproj.GenerateResource.Cache
+c:\users\dori\documents\visual studio 2013\Projects\checkdb\checkdb\obj\Debug\checkdb.exe
+c:\users\dori\documents\visual studio 2013\Projects\checkdb\checkdb\obj\Debug\checkdb.pdb
+C:\Users\dori\documents\visual studio 2013\Projects\checkdb\checkdb\obj\Debug\checkdb.FormAnalise.resources
+C:\Users\dori\documents\visual studio 2013\Projects\checkdb\checkdb\obj\Debug\checkdb.FormAviso.resources
+C:\Users\dori\Documents\Visual Studio 2013\Projects\checkdb\checkdb\obj\Debug\checkdb.csprojResolveAssemblyReference.cache
+C:\Users\dori\Documents\Visual Studio 2013\Projects\checkdb\checkdb\bin\Debug\Oracle.DataAccess.dll
+C:\Users\dori\documents\visual studio 2013\Projects\checkdb\checkdb\obj\Debug\checkdb.FormResultado.resources

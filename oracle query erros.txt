@@ -8,7 +8,7 @@ select count(1) from gv$option where upper(VALUE) = 'TRUE' and PARAMETER in ('Pa
 select count(1) from gv$parameter where upper(VALUE) <> 'NONE' and name = 'control_management_pack_access'
 
 --pga agregate < 536870912
-select count(1) from gv$parameter where value < 536870912 and name = 'pga_aggregate_target'
+select count(1) from gv$parameter where value < '536870912' and name = 'pga_aggregate_target'
 
 --recicle bin on
 select count(1) from gv$parameter where upper(VALUE) = 'ON' and name = 'recyclebin'
@@ -38,14 +38,12 @@ select count(1) from (select INPUT_TYPE, STATUS, max(START_TIME) start_time, max
 select count(1) from (select INPUT_TYPE, STATUS, max(START_TIME) start_time, max(END_TIME) end_time from V$RMAN_BACKUP_JOB_DETAILS where INPUT_TYPE = 'DB FULL' group by INPUT_TYPE, STATUS) where end_time < sysdate-25/24
 
 --ultima analise foi nos ultimos 10 dias
-select count(1) from (select owner, max(nvl(last_analyzed,sysdate-100)) ultima_analise 
-from dba_tables where owner not in('SH','PM','OE','IX','HR','SPATIAL_WFS_ADMIN_USR','SPATIAL_CSW_ADMIN_USR' ,'APEX_PUBLIC_USER' ,'DIP' ,'MDDATA' ,'XS$NULL' ,'ORACLE_OCM' ,'SCOTT' ,'DBSNMP' ,'SYSMAN' ,'OLAPSYS' ,'SI_INFORMTN_SCHEMA' ,'OWBSYS' ,'ORDPLUGINS' ,'XDB' ,'ANONYMOUS' ,'CTXSYS' ,'ORDDATA' ,'OWBSYS_AUDIT' ,'APEX_030200' ,'APPQOSSYS' ,'WMSYS' ,'EXFSYS' ,'ORDSYS' ,'MDSYS' ,'FLOWS_FILES' ,'SYSTEM' ,'SYS' ,'MGMT_VIEW' ,'OUTLN') 
-group by owner order by 1,2) where ultima_analise < sysdate-10
+select count(1) from (select owner, max(nvl(last_analyzed,sysdate-100)) ultima_analise from dba_tables where owner not in('SH','PM','OE','IX','HR','SPATIAL_WFS_ADMIN_USR','SPATIAL_CSW_ADMIN_USR' ,'APEX_PUBLIC_USER' ,'DIP' ,'MDDATA' ,'XS$NULL' ,'ORACLE_OCM' ,'SCOTT' ,'DBSNMP' ,'SYSMAN' ,'OLAPSYS' ,'SI_INFORMTN_SCHEMA' ,'OWBSYS' ,'ORDPLUGINS' ,'XDB' ,'ANONYMOUS' ,'CTXSYS' ,'ORDDATA' ,'OWBSYS_AUDIT' ,'APEX_030200' ,'APPQOSSYS' ,'WMSYS' ,'EXFSYS' ,'ORDSYS' ,'MDSYS' ,'FLOWS_FILES' ,'SYSTEM' ,'SYS' ,'MGMT_VIEW' ,'OUTLN') group by owner order by 1,2) where ultima_analise < sysdate-10
 
 --tamanho dos membros menor de 200mb
-select BYTES from gv$log where bytes < '209715200'
+select count(1) from gv$log where bytes < '209715200'
 
---grupos com menos de 3 membros
+--grupos com menos de 2 membros
 select count(1) from (select INST_ID,GROUP#,count(MEMBERS) membros from gv$log group by INST_ID,GROUP#) where membros <2
 
 --instancia com menos de 5 grupos
